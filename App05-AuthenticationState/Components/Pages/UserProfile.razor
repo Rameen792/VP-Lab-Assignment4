@@ -1,5 +1,60 @@
-﻿<h3>UserProfile</h3>
+﻿@page "/user-profile"
+@rendermode InteractiveServer
 
-@code {
+@using App05_AuthenticationState.Services
+@inject AuthenticationStateService AuthService
 
+@implements IDisposable
+
+<PageTitle>User Profile</PageTitle>
+
+<div class="container mt-5">
+
+    <div class="card shadow border-0">
+
+        <div class="card-header text-white"
+             style="background-color:#34495E;">
+
+            <h2 class="mb-0">
+                User Profile
+            </h2>
+
+        </div>
+
+        <div class="card-body">
+
+            @if (AuthService.IsAuthenticated)
+            {
+                <div class="alert alert-success">
+
+                    Welcome! You are logged in.
+
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+
+                    Please log in first.
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        AuthService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AuthService.OnChange -= StateHasChanged;
+    }
 }
