@@ -1,11 +1,12 @@
 using App05_AuthenticationState.Components;
+using App05_AuthenticationState.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
+builder.Services.AddSingleton<AuthenticationStateService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
