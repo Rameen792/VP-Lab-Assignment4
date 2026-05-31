@@ -1,5 +1,103 @@
-﻿<h3>FormValidation</h3>
+﻿@page "/form-validation"
+@rendermode InteractiveServer
 
-@code {
+@using System.ComponentModel.DataAnnotations
+@using App02_FormValidation.Models
 
+<PageTitle>Form Validation</PageTitle>
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg">
+
+        <div class="card-header bg-success text-white">
+
+            <h2 class="mb-0">
+                User Registration Form
+            </h2>
+
+        </div>
+
+        <div class="card-body">
+
+            <EditForm Model="@user"
+                      OnValidSubmit="HandleSubmit">
+
+                <DataAnnotationsValidator />
+
+                <ValidationSummary />
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        First Name
+                    </label>
+
+                    <InputText class="form-control"
+                               @bind-Value="user.FirstName" />
+
+                    <ValidationMessage For="@(() => user.FirstName)" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Last Name
+                    </label>
+
+                    <InputText class="form-control"
+                               @bind-Value="user.LastName" />
+
+                    <ValidationMessage For="@(() => user.LastName)" />
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Email
+                    </label>
+
+                    <InputText class="form-control"
+                               @bind-Value="user.Email" />
+
+                    <ValidationMessage For="@(() => user.Email)" />
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    Submit
+
+                </button>
+
+            </EditForm>
+
+            @if (showSuccessMessage)
+            {
+                <div class="alert alert-success mt-4">
+
+                    Form submitted successfully!
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    private UserFormModel user = new();
+
+    private bool showSuccessMessage = false;
+
+    private void HandleSubmit()
+    {
+        showSuccessMessage = true;
+    }
 }
