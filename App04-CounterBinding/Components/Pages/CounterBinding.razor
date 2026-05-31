@@ -1,5 +1,108 @@
-﻿<h3>CounterBinding</h3>
+﻿@page "/counter-binding"
+@rendermode InteractiveServer
 
-@code {
+<PageTitle>Counter Binding</PageTitle>
 
+<div class="container mt-5">
+
+    <div class="card shadow border-0">
+
+        <div class="card-header text-white"
+             style="background-color:#34495E;">
+
+            <h2 class="mb-0">
+                Counter Management System
+            </h2>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <label class="form-label fw-bold">
+                        Current Counter Value
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           @bind="Count" />
+
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+
+                <button class="btn text-white"
+                        style="background-color:#2C3E50;"
+                        @onclick="IncrementCount">
+
+                    Increase Counter
+
+                </button>
+
+            </div>
+
+            <hr />
+
+            <div class="alert alert-light border">
+
+                <h4 class="mb-0">
+                    Current Count:
+                    @Count
+                </h4>
+
+            </div>
+
+            <div class="card mt-4">
+
+                <div class="card-body">
+
+                    <h5 class="text-primary">
+                        Binding Explanation
+                    </h5>
+
+                    <p>
+                        <strong>Two-Way Binding:</strong>
+                        The number input uses
+                        <code>@@bind</code>
+                        to synchronize the Count variable
+                        with the user interface.
+                    </p>
+
+                    <p>
+                        <strong>One-Way Binding:</strong>
+                        The current count is displayed using
+                        Razor syntax from the Count variable.
+                    </p>
+
+                    <p>
+                        <strong>Event Handling:</strong>
+                        The button uses
+                        <code>@@onclick</code>
+                        to execute a method whenever
+                        the user clicks it.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    private int Count = 0;
+
+    private void IncrementCount()
+    {
+        Count++;
+    }
 }
