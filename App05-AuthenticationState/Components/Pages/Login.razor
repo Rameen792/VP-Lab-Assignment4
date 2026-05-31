@@ -1,5 +1,61 @@
-﻿<h3>Login</h3>
+﻿@page "/login"
+@rendermode InteractiveServer
 
-@code {
+@using App05_AuthenticationState.Services
+@inject AuthenticationStateService AuthService
 
+<PageTitle>Login</PageTitle>
+
+<div class="container mt-5">
+
+    <div class="card shadow border-0">
+
+        <div class="card-header text-white"
+             style="background-color:#34495E;">
+
+            <h2 class="mb-0">
+                Authentication Control
+            </h2>
+
+        </div>
+
+        <div class="card-body">
+
+            @if (!AuthService.IsAuthenticated)
+            {
+                <button class="btn text-white"
+                        style="background-color:#2C3E50;"
+                        @onclick="LogIn">
+
+                    Log In
+
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-danger"
+                        @onclick="LogOut">
+
+                    Log Out
+
+                </button>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    private void LogIn()
+    {
+        AuthService.LogIn();
+    }
+
+    private void LogOut()
+    {
+        AuthService.LogOut();
+    }
 }
