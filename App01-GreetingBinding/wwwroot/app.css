@@ -86,3 +86,54 @@ html, body {
         text-decoration: none;
         letter-spacing: 0.3px;
     }
+.nav-scrollable {
+    padding: 1.25rem 0 2rem;
+}
+
+.nav-item {
+    margin: 2px 12px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--sidebar-text) !important;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.92rem;
+    text-decoration: none;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent);
+        border-radius: 0 3px 3px 0;
+        transform: scaleY(0);
+        transition: transform 0.2s ease;
+    }
+
+    .nav-link:hover {
+        background: var(--sidebar-hover);
+        color: #FFFFFF !important;
+    }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+    .nav-link.active {
+        background: var(--sidebar-active);
+        color: #FFFFFF !important;
+        font-weight: 600;
+    }
