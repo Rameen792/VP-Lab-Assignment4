@@ -1,5 +1,69 @@
-﻿<h3>NotificationSettings</h3>
+﻿@page "/settings"
+@rendermode InteractiveServer
+@inject App06_NotificationService.Models.NotificationConfig Config
+
+<PageTitle>Settings — NotifyHub</PageTitle>
+
+<div class="page-hero" style="margin-bottom:1.5rem;">
+    <div class="hero-tag">⚙️ Configuration</div>
+    <h1 class="page-title" style="font-size:1.6rem;">Notification Settings</h1>
+    <p class="page-subtitle">Modify the global singleton config. Changes apply immediately across the app.</p>
+</div>
+
+<div class="glass-card" style="max-width:520px;">
+    <h5 style="color:var(--teal-400); font-weight:700; margin-bottom:1.5rem; display:flex; align-items:center; gap:0.5rem;">
+        ⚙️ Global Configuration
+    </h5>
+
+    <div style="margin-bottom:1.25rem;">
+        <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.05em;">
+            Default Number of Notifications
+        </label>
+        <input type="number"
+               class="form-input-dark"
+               min="1" max="10"
+               @bind="Config.DefaultNumberOfNotifications" />
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">Range: 1–10 notifications</div>
+    </div>
+
+    <div style="margin-bottom:1.75rem;">
+        <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.05em;">
+            Display Style
+        </label>
+        <select class="form-input-dark" @bind="Config.NotificationStyle">
+            <option value="Compact">Compact — minimal single-line view</option>
+            <option value="Detailed">Detailed — full description view</option>
+        </select>
+    </div>
+
+    <button class="btn-teal" @onclick="SaveSettings">
+        ✅ Apply Settings
+    </button>
+
+    @if (_saved)
+    {
+        <div style="margin-top:1rem; padding:0.75rem 1rem; background:rgba(0,212,180,0.1); border:1px solid rgba(0,212,180,0.3); border-radius:10px; color:var(--teal-400); font-size:0.875rem;">
+            ✓ Settings saved! Default: <strong>@Config.DefaultNumberOfNotifications</strong> notifications, Style: <strong>@Config.NotificationStyle</strong>
+        </div>
+    }
+</div>
+
+<div style="margin-top:1.5rem;">
+    <a href="/notifications" class="btn-outline-teal" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem;">
+        🔔 Go to Notifications →
+    </a>
+</div>
 
 @code {
+    private bool _saved = false;
 
+    private void SaveSettings()
+    {
+        _saved = true;
+        Task.Delay(3000).ContinueWith(_ =>
+        {
+            _saved = false;
+            InvokeAsync(StateHasChanged);
+        });
+    }
 }
