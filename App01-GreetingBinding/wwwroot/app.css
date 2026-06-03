@@ -1,1 +1,71 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root {
+    --primary: #7C3AED;
+    --primary-dark: #5B21B6;
+    --primary-light: #DDD6FE;
+    --accent: #A78BFA;
+    --accent-glow: rgba(124, 58, 237, 0.35);
+    --success: #10B981;
+    --warning: #F59E0B;
+    --surface: #FAFAFA;
+    --card-bg: #FFFFFF;
+    --sidebar-bg: #1E1B4B;
+    --sidebar-text: #C4B5FD;
+    --sidebar-hover: rgba(167,139,250,0.15);
+    --sidebar-active: rgba(124, 58, 237, 0.3);
+    --text-main: #1E1B4B;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --radius: 14px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 24px rgba(124,58,237,0.10);
+    --shadow-lg: 0 8px 40px rgba(124,58,237,0.18);
+    --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--surface);
+    color: var(--text-main);
+    height: 100%;
+    font-size: 15px;
+    line-height: 1.6;
+}
+/* Layout */
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar {
+    background: var(--sidebar-bg);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    width: 260px;
+    min-width: 260px;
+    flex-shrink: 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+    z-index: 100;
+}
+
+.main-content {
+    flex: 1;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #F5F3FF 100%);
+    padding: 0;
+}
+
+@media (min-width: 641px) {
+    .page {
+        flex-direction: row;
+    }
+}
