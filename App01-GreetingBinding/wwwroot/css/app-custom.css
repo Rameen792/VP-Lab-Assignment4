@@ -12,3 +12,16 @@
 body {
     background-color: var(--background);
 }
+.app-card {
+    background: var(--surface);
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.app-header {
+    background: var(--primary);
+    color: white;
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+}
