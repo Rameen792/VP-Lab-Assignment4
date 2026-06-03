@@ -1,4 +1,6 @@
 using App06_NotificationService.Components;
+using App06_NotificationService.Models;
+using App06_NotificationService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Register config as singleton
+builder.Services.AddSingleton<NotificationConfig>();
+// Register NotificationService as scoped
+builder.Services.AddScoped<NotificationService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
