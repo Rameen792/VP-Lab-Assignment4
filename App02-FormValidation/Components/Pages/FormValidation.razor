@@ -6,86 +6,80 @@
 
 <PageTitle>Form Validation</PageTitle>
 
-<div class="container mt-5">
+<div style="padding: 2rem;">
 
-    <div class="card shadow-lg">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:#134E4A; margin-bottom:0.25rem;">
+            📋 User Registration
+        </h2>
+        <p style="color:#6B7280; margin:0; font-size:0.95rem;">
+            Fill in all fields below. Validation runs on submit.
+        </p>
+    </div>
 
-        <div class="card-header bg-success text-white">
-
-            <h2 class="mb-0">
-                User Registration Form
-            </h2>
-
+    <div class="card">
+        <div class="card-header" style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:700; font-size:1rem; color:#134E4A;">Registration Form</span>
+            <span style="background:#CCFBF1; color:#0D9488; padding:3px 12px; border-radius:20px; font-size:0.78rem; font-weight:600;">
+                EditForm + DataAnnotations
+            </span>
         </div>
 
         <div class="card-body">
 
-            <EditForm Model="@user"
-                      OnValidSubmit="HandleSubmit">
+            <EditForm Model="@user" OnValidSubmit="HandleSubmit">
 
                 <DataAnnotationsValidator />
-
                 <ValidationSummary />
 
-                <div class="mb-3">
+                <div class="field-row">
 
-                    <label class="form-label">
-                        First Name
-                    </label>
+                    <div class="field-group">
+                        <label class="form-label">First Name</label>
+                        <InputText class="form-control"
+                                   placeholder="e.g. Muhammad"
+                                   @bind-Value="user.FirstName" />
+                        <ValidationMessage For="@(() => user.FirstName)" />
+                    </div>
 
-                    <InputText class="form-control"
-                               @bind-Value="user.FirstName" />
-
-                    <ValidationMessage For="@(() => user.FirstName)" />
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Last Name
-                    </label>
-
-                    <InputText class="form-control"
-                               @bind-Value="user.LastName" />
-
-                    <ValidationMessage For="@(() => user.LastName)" />
+                    <div class="field-group">
+                        <label class="form-label">Last Name</label>
+                        <InputText class="form-control"
+                                   placeholder="e.g. Ali"
+                                   @bind-Value="user.LastName" />
+                        <ValidationMessage For="@(() => user.LastName)" />
+                    </div>
 
                 </div>
 
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Email
-                    </label>
-
+                <div class="field-group">
+                    <label class="form-label">Email Address</label>
                     <InputText class="form-control"
+                               placeholder="e.g. ali@example.com"
                                @bind-Value="user.Email" />
-
                     <ValidationMessage For="@(() => user.Email)" />
-
                 </div>
 
-                <button type="submit"
-                        class="btn btn-success">
+                <div class="divider"></div>
 
-                    Submit
-
+                <button type="submit" class="btn-submit">
+                    <span>✔</span> Submit Registration
                 </button>
 
             </EditForm>
 
             @if (showSuccessMessage)
             {
-                <div class="alert alert-success mt-4">
-
-                    Form submitted successfully!
-
+                <div class="success-banner" style="margin-top: 1.5rem;">
+                    <div class="check-circle">✓</div>
+                    <div class="success-text">
+                        <strong>Registration Successful!</strong>
+                        <span>Your details have been submitted successfully.</span>
+                    </div>
                 </div>
             }
 
         </div>
-
     </div>
 
 </div>
@@ -93,7 +87,6 @@
 @code
 {
     private UserFormModel user = new();
-
     private bool showSuccessMessage = false;
 
     private void HandleSubmit()
