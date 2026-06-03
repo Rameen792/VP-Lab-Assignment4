@@ -69,3 +69,20 @@ html, body {
         flex-direction: row;
     }
 }
+.top-row {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 0 1.5rem;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(124,58,237,0.25);
+}
+
+    .top-row a,
+    .top-row .navbar-brand {
+        color: #FFFFFF !important;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        letter-spacing: 0.3px;
+    }
