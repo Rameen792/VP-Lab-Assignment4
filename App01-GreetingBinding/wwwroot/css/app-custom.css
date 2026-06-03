@@ -25,3 +25,15 @@ body {
     padding: 20px;
     border-radius: 16px 16px 0 0;
 }
+
+.custom-btn {
+    background-color: var(--secondary);
+    color: white;
+    border: none;
+    transition: all .3s ease;
+}
+
+    .custom-btn:hover {
+        background-color: var(--primary);
+        transform: translateY(-2px);
+    }
