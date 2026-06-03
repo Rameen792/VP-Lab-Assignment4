@@ -1,50 +1,86 @@
 ﻿:root {
-    --primary: #1F2937;
-    --secondary: #374151;
-    --accent: #4B5563;
-    --background: #F8FAFC;
+    --primary: #0F172A;
+    --secondary: #1E293B;
+    --accent: #334155;
     --surface: #FFFFFF;
-    --success: #166534;
-    --warning: #92400E;
-    --danger: #991B1B;
-    --text: #111827;
-}
-body {
-    background-color: var(--background);
-}
-.app-card {
-    background: var(--surface);
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    --background: #F1F5F9;
+    --success: #15803D;
+    --text: #0F172A;
 }
 
-.app-header {
-    background: var(--primary);
-    color: white;
-    padding: 20px;
-    border-radius: 16px 16px 0 0;
+body {
+    background: linear-gradient( 135deg, #F8FAFC, #E2E8F0 );
+    min-height: 100vh;
+    font-family: 'Segoe UI',sans-serif;
 }
+
+.hero-section {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.hero-subtitle {
+    color: #64748B;
+    font-size: 1.15rem;
+}
+
+.glass-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,.08);
+    transition: .3s ease;
+}
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+    }
+
+.custom-input {
+    border-radius: 12px;
+    border: 1px solid #CBD5E1;
+    padding: 14px;
+}
+
+    .custom-input:focus {
+        border-color: #1E293B;
+        box-shadow: 0 0 0 .2rem rgba(30,41,59,.15);
+    }
 
 .custom-btn {
-    background-color: var(--secondary);
+    background: var(--primary);
     color: white;
     border: none;
-    transition: all .3s ease;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    transition: .3s ease;
 }
 
     .custom-btn:hover {
-        background-color: var(--primary);
+        background: var(--secondary);
         transform: translateY(-2px);
     }
-.section-title {
-    color: var(--primary);
-    font-weight: 600;
+
+.greeting-panel {
+    background: #F8FAFC;
+    border-left: 5px solid var(--primary);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
 }
 
-.info-panel {
-    border-left: 5px solid var(--primary);
-    background: #f1f5f9;
-    padding: 15px;
-    border-radius: 8px;
+.info-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,.05);
+    height: 100%;
 }
