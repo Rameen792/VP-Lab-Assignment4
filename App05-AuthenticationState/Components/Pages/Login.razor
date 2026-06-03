@@ -6,56 +6,93 @@
 
 <PageTitle>Login</PageTitle>
 
-<div class="container mt-5">
+<div style="padding: 2rem;">
 
-    <div class="card shadow border-0">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:#1F0A12; margin-bottom:0.25rem;">
+            🔑 Authentication Control
+        </h2>
+        <p style="color:#6B7280; margin:0; font-size:0.95rem;">
+            Toggle your login state. The sidebar updates instantly via the shared service.
+        </p>
+    </div>
 
-        <div class="card-header text-white"
-             style="background-color:#34495E;">
-
-            <h2 class="mb-0">
-                Authentication Control
-            </h2>
-
+    <div class="card mb-4">
+        <div class="card-header">
+            <span style="font-weight:700; font-size:1rem; color:#1F0A12;">Session Control</span>
         </div>
 
         <div class="card-body">
 
             @if (!AuthService.IsAuthenticated)
             {
-                <button class="btn text-white"
-                        style="background-color:#2C3E50;"
-                        @onclick="LogIn">
-
-                    Log In
-
-                </button>
+                <div class="auth-panel">
+                    <div class="auth-avatar unauthenticated">🔒</div>
+                    <div class="auth-title red">You are logged out</div>
+                    <div class="auth-subtitle">Click below to simulate a login session.</div>
+                    <button class="btn-login" @onclick="LogIn">
+                        🔑 Log In
+                    </button>
+                </div>
             }
             else
             {
-                <button class="btn btn-danger"
-                        @onclick="LogOut">
-
-                    Log Out
-
-                </button>
+                <div class="auth-panel">
+                    <div class="auth-avatar authenticated">✅</div>
+                    <div class="auth-title green">Session Active</div>
+                    <div class="auth-subtitle">You are currently logged in. Click below to end your session.</div>
+                    <button class="btn-logout" @onclick="LogOut">
+                        🚪 Log Out
+                    </button>
+                </div>
             }
 
         </div>
+    </div>
 
+    <div class="card">
+        <div class="card-header">
+            <span style="font-weight:700; font-size:0.95rem; color:#1F0A12;">📖 How It Works</span>
+        </div>
+        <div class="card-body" style="padding-top:1rem; padding-bottom:1rem;">
+
+            <div class="explanation-item">
+                <div class="exp-dot"></div>
+                <div>
+                    <strong style="font-size:0.92rem;">Singleton Service</strong>
+                    <p style="color:#6B7280; font-size:0.87rem; margin:4px 0 0;">
+                        <code>AuthenticationStateService</code> is registered as a Singleton — one shared instance across all components.
+                    </p>
+                </div>
+            </div>
+
+            <div class="explanation-item">
+                <div class="exp-dot"></div>
+                <div>
+                    <strong style="font-size:0.92rem;">Event-Driven Updates</strong>
+                    <p style="color:#6B7280; font-size:0.87rem; margin:4px 0 0;">
+                        The service fires an <code>OnChange</code> event. Components subscribe and call <code>StateHasChanged()</code> to re-render.
+                    </p>
+                </div>
+            </div>
+
+            <div class="explanation-item">
+                <div class="exp-dot"></div>
+                <div>
+                    <strong style="font-size:0.92rem;">IDisposable</strong>
+                    <p style="color:#6B7280; font-size:0.87rem; margin:4px 0 0;">
+                        Components implement <code>IDisposable</code> to unsubscribe from the event when they are destroyed, preventing memory leaks.
+                    </p>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 </div>
 
 @code
 {
-    private void LogIn()
-    {
-        AuthService.LogIn();
-    }
-
-    private void LogOut()
-    {
-        AuthService.LogOut();
-    }
+    private void LogIn() => AuthService.LogIn();
+    private void LogOut() => AuthService.LogOut();
 }
