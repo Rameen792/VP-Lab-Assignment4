@@ -12,6 +12,13 @@
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet />
+    <!-- Add this inside <head> in App.razor, after <base href="/"> -->
+    <script>
+        (function() {
+            var t = localStorage.getItem('theme');
+            document.body.classList.add(t === 'dark' ? 'dark-mode' : 'light-mode');
+        })();
+    </script>
 </head>
 
 <body>
