@@ -37,3 +37,14 @@ body {
         background-color: var(--primary);
         transform: translateY(-2px);
     }
+.section-title {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.info-panel {
+    border-left: 5px solid var(--primary);
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 8px;
+}
