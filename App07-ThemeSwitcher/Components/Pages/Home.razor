@@ -1,7 +1,46 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>ThemeSwitch — Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="theme-hero">
+    <div class="hero-eyebrow">✦ Application 07</div>
+    <h1 class="hero-heading">Light & Dark<br />Theme Switcher</h1>
+    <p class="hero-body">
+        A Blazor Server app with localStorage-persisted theme switching.
+        Your preference is saved across sessions — even after a full page reload.
+    </p>
+    <div style="margin-top:2rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="/theme-demo" class="btn-accent">🎨 See Theme Demo</a>
+    </div>
+</div>
 
-Welcome to your new app.
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.25rem;">
+    <div class="card-surface">
+        <div class="feature-label">Feature</div>
+        <div class="feature-title">💾 Persistent Storage</div>
+        <div class="feature-desc">
+            Theme preference is saved to <code>localStorage</code> and restored automatically on each page load.
+        </div>
+    </div>
+    <div class="card-surface">
+        <div class="feature-label">Feature</div>
+        <div class="feature-title">⚡ Instant Toggle</div>
+        <div class="feature-desc">
+            One button in the top bar switches the entire body class — every component reacts via CSS variables.
+        </div>
+    </div>
+    <div class="card-surface">
+        <div class="feature-label">Feature</div>
+        <div class="feature-title">🎨 CSS Variables</div>
+        <div class="feature-desc">
+            All colors are driven by CSS custom properties so switching classes triggers a cascade update with no flicker.
+        </div>
+    </div>
+    <div class="card-surface">
+        <div class="feature-label">Feature</div>
+        <div class="feature-title">🔗 JS Interop</div>
+        <div class="feature-desc">
+            <code>IJSRuntime</code> reads and writes localStorage from within C# Blazor component lifecycle.
+        </div>
+    </div>
+</div>
