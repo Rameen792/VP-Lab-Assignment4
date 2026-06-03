@@ -1,5 +1,115 @@
-﻿<h3>NotificationDisplay</h3>
+﻿@page "/notifications"
+@rendermode InteractiveServer
+@inject App06_NotificationService.Services.NotificationService NotifService
+@inject App06_NotificationService.Models.NotificationConfig Config
+
+<PageTitle>Notifications — NotifyHub</PageTitle>
+
+<div class="page-hero" style="margin-bottom:1.5rem;">
+    <div class="hero-tag">🔔 Live Feed</div>
+    <h1 class="page-title" style="font-size:1.6rem;">Notification Centre</h1>
+    <p class="page-subtitle">Fetched via <code style="color:var(--teal-400)">NotificationService</code> · DI injected · Config driven</p>
+</div>
+
+<!-- Controls Bar -->
+<div class="glass-card" style="margin-bottom:1.25rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+    <div style="flex:1; min-width:180px;">
+        <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">
+            Number of Notifications
+        </label>
+        <input type="number" class="form-input-dark" min="1" max="10"
+               @bind="_overrideCount" style="max-width:160px;" />
+    </div>
+
+    <div style="flex:1; min-width:180px;">
+        <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">
+            Display Style
+        </label>
+        <select class="form-input-dark" @bind="_style" style="max-width:220px;">
+            <option value="Compact">Compact</option>
+            <option value="Detailed">Detailed</option>
+        </select>
+    </div>
+
+    <button class="btn-teal" @onclick="LoadNotifications" disabled="@_loading">
+        @(_loading ? "Loading…" : "🔄 Fetch Notifications")
+    </button>
+</div>
+
+<!-- Stats chips -->
+@if (_notifications != null)
+{
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+        <div class="stat-chip">📬 <span>@_notifications.Count</span> loaded</div>
+        <div class="stat-chip">📖 <span>@_notifications.Count(n => !n.IsRead)</span> unread</div>
+        <div class="stat-chip">🎨 <span>@_style</span> view</div>
+    </div>
+}
+
+<!-- Loading -->
+@if (_loading)
+{
+    <div class="glass-card" style="text-align:center; padding:3rem;">
+        <div class="spinner"></div>
+        <div style="color:var(--text-muted); margin-top:0.5rem; font-size:0.875rem;">Fetching notifications…</div>
+    </div>
+}
+
+<!-- Notification list -->
+@if (_notifications != null && !_loading)
+{
+    @foreach (var n in _notifications)
+    {
+        @if (_style == "Compact")
+        {
+            <div class="notif-compact @(n.IsRead ? "" : "unread")">
+                <span class="notif-icon">@n.Icon</span>
+                <div style="flex:1;">
+                    <div class="notif-title">@n.Title</div>
+                </div>
+                <span class="badge badge-@n.Priority.ToString().ToLower()">@n.Priority</span>
+                <span class="notif-time">@n.TimeAgo</span>
+            </div>
+        }
+        else
+        {
+            <div class="notif-detailed @(n.IsRead ? "" : "unread")">
+                <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+                    <span class="notif-icon">@n.Icon</span>
+                    <div style="flex:1;">
+                        <div class="notif-title">@n.Title</div>
+                        <div class="notif-time">@n.TimeAgo</div>
+                    </div>
+                    <span class="badge badge-@n.Priority.ToString().ToLower()">@n.Priority</span>
+                    @if (!n.IsRead)
+                    {
+                        <span style="width:8px; height:8px; background:var(--teal-400); border-radius:50%; display:inline-block; flex-shrink:0;"></span>
+                    }
+                </div>
+                <div class="notif-detail">@n.Detail</div>
+            </div>
+        }
+    }
+}
 
 @code {
+    private List<App06_NotificationService.Services.NotificationItem>? _notifications;
+    private bool _loading = false;
+    private int _overrideCount;
+    private string _style = "Compact";
 
+    protected override async Task OnInitializedAsync()
+    {
+        _overrideCount = Config.DefaultNumberOfNotifications;
+        _style = Config.NotificationStyle;
+        await LoadNotifications();
+    }
+
+    private async Task LoadNotifications()
+    {
+        _loading = true;
+        _notifications = null;
+        _notifications = await NotifService.GetNotificationsAsync(_overrideCount);
+        _loading = false;
+    }
 }
