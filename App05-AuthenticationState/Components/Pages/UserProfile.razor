@@ -8,41 +8,89 @@
 
 <PageTitle>User Profile</PageTitle>
 
-<div class="container mt-5">
+<div style="padding: 2rem;">
 
-    <div class="card shadow border-0">
-
-        <div class="card-header text-white"
-             style="background-color:#34495E;">
-
-            <h2 class="mb-0">
-                User Profile
-            </h2>
-
-        </div>
-
-        <div class="card-body">
-
-            @if (AuthService.IsAuthenticated)
-            {
-                <div class="alert alert-success">
-
-                    Welcome! You are logged in.
-
-                </div>
-            }
-            else
-            {
-                <div class="alert alert-warning">
-
-                    Please log in first.
-
-                </div>
-            }
-
-        </div>
-
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:#1F0A12; margin-bottom:0.25rem;">
+            👤 User Profile
+        </h2>
+        <p style="color:#6B7280; margin:0; font-size:0.95rem;">
+            This page reflects the current authentication state in real time.
+        </p>
     </div>
+
+    <div class="status-bar @(AuthService.IsAuthenticated ? "authenticated" : "unauthenticated")">
+        <span>@(AuthService.IsAuthenticated ? "🟢" : "🔴")</span>
+        <span>
+            Status:
+            <strong>@(AuthService.IsAuthenticated ? "Authenticated — Session Active" : "Unauthenticated — Please Log In")</strong>
+        </span>
+    </div>
+
+    @if (AuthService.IsAuthenticated)
+    {
+        <div class="card profile-section">
+            <div class="card-header" style="display:flex; align-items:center; gap:12px;">
+                <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#E11D48,#FB7185); display:flex; align-items:center; justify-content:center; color:white; font-size:1.1rem;">
+                    👤
+                </div>
+                <div>
+                    <div style="font-weight:700; font-size:1rem; color:#1F0A12;">Demo User</div>
+                    <div style="font-size:0.8rem; color:#6B7280;">Simulated Account</div>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="profile-row">
+                    <div class="profile-icon">🪪</div>
+                    <div>
+                        <div class="profile-key">Username</div>
+                        <div class="profile-value">demo_user</div>
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-icon">📧</div>
+                    <div>
+                        <div class="profile-key">Email</div>
+                        <div class="profile-value">demo@university.edu.pk</div>
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-icon">🏷️</div>
+                    <div>
+                        <div class="profile-key">Role</div>
+                        <div class="profile-value">Student — Visual Programming Lab</div>
+                    </div>
+                </div>
+
+                <div class="profile-row">
+                    <div class="profile-icon">✅</div>
+                    <div>
+                        <div class="profile-key">Session</div>
+                        <div class="profile-value" style="color:#059669;">Active</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="auth-panel">
+                    <div class="auth-avatar unauthenticated">🔒</div>
+                    <div class="auth-title red">Access Restricted</div>
+                    <div class="auth-subtitle">
+                        You must be logged in to view your profile.<br />
+                        Go to the <a href="login" style="color:var(--primary); font-weight:600;">Login page</a> to authenticate.
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
 </div>
 
