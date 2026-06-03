@@ -1,7 +1,52 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Home — Authentication State</PageTitle>
 
-<h1>Hello, world!</h1>
+<div style="padding: 2rem;">
 
-Welcome to your new app.
+    <div class="hero-section">
+        <div style="position:relative; z-index:1;">
+            <div style="font-size:0.8rem; font-weight:700; letter-spacing:1px; opacity:0.75; text-transform:uppercase; margin-bottom:0.5rem;">
+                Visual Programming · Lab 04
+            </div>
+            <h1>Application 05</h1>
+            <p>Authentication State — Service-Based Login with State Change Events</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="feature-card rose">
+                <div class="feature-icon">🎯</div>
+                <h5>Objective</h5>
+                <p>Simulate authentication state using a Singleton service with event-driven UI updates.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card green">
+                <div class="feature-icon">⚙️</div>
+                <h5>Technologies</h5>
+                <p>Blazor Server, DI Singleton, <code>Action</code> events, <code>IDisposable</code>.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card amber">
+                <div class="feature-icon">✨</div>
+                <h5>Features</h5>
+                <p>Live sidebar auth indicator, animated login/logout, profile page with access control.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="info-badge">
+        <span style="font-size:1.3rem;">📘</span>
+        <span>
+            <strong>Student Assignment Project</strong> — Demonstrates shared state management across Blazor components.
+        </span>
+    </div>
+
+</div>
