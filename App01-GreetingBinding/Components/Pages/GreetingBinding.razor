@@ -3,94 +3,109 @@
 
 <PageTitle>Greeting Binding</PageTitle>
 
-<div class="container mt-5">
+<div style="padding: 2rem;">
 
-    <div class="card shadow-lg border-0">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size:1.6rem; font-weight:800; color:#1E1B4B; margin-bottom:0.25rem;">
+            👋 Greeting Application
+        </h2>
+        <p style="color:#6B7280; margin:0; font-size:0.95rem;">
+            Type your name below and watch the greeting update in real time.
+        </p>
+    </div>
 
-        <div class="card-header bg-gradient text-black">
-
-            <h2 class="mb-0">
-                Greeting Application
-            </h2>
-
-        </div>
-
+    <div class="card mb-4">
         <div class="card-body">
 
-            <div class="mb-3">
-
-                <label class="form-label fw-bold">
-                    Enter Your Name
-                </label>
-
-                <input class="form-control"
-                       placeholder="Type your name here..."
-                       @bind="UserName" />
-
+            <div class="mb-4">
+                <label class="form-label">Your Name</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input class="form-control"
+                           placeholder="e.g. Ali Hassan..."
+                           @bind="UserName"
+                           @bind:event="oninput" />
+                </div>
+                <div style="font-size:0.8rem; color:#9CA3AF; margin-top:6px;">
+                    Binding updates live as you type (<code>@@bind:event="oninput"</code>)
+                </div>
             </div>
 
-            <hr />
+            <div class="divider"></div>
 
             @if (!string.IsNullOrWhiteSpace(UserName))
             {
-                <div class="alert alert-success">
-
-                    <h4>
-                        Hello, @UserName!
-                    </h4>
-
-                    <p class="mb-0">
-                        Welcome to Blazor Data Binding.
-                    </p>
-
+                <div class="greeting-display">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🎉</div>
+                    <h3>Hello, @UserName!</h3>
+                    <p>Welcome to Blazor Data Binding. Great to meet you.</p>
                 </div>
             }
             else
             {
-                <div class="alert alert-warning">
-
-                    Please enter your name above.
-
+                <div class="alert-warning-custom">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:1.3rem;">⚠️</span>
+                        <div>
+                            <div style="font-weight:600; color:#92400E;">Waiting for input</div>
+                            <div style="font-size:0.87rem; color:#B45309;">
+                                Enter your name above to see the live greeting.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             }
 
-            <hr />
+        </div>
+    </div>
 
-            <div class="card mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h6 style="font-weight:700; color:#1E1B4B; margin:0; font-size:0.95rem;">
+                📖 How Data Binding Works
+            </h6>
+        </div>
+        <div class="card-body" style="padding-top: 1rem; padding-bottom: 1rem;">
 
-                <div class="card-body">
-
-                    <h5 class="text-bg-light">
-                        Data Binding Explanation
-                    </h5>
-
-                    <p>
-                        <strong>Two-Way Binding:</strong>
-                        The textbox uses
-                        <code>@@bind</code>
-                        to automatically update the
-                        UserName variable whenever the user types.
+            <div class="explanation-item">
+                <div class="exp-dot"></div>
+                <div>
+                    <strong style="font-size:0.92rem;">Two-Way Binding</strong>
+                    <p style="color:#6B7280; font-size:0.87rem; margin:4px 0 0;">
+                        The textbox uses <code>@@bind</code> with <code>@@bind:event="oninput"</code>
+                        to instantly synchronize every keystroke with the <code>UserName</code> variable.
                     </p>
-
-                    <p>
-                        <strong>One-Way Binding:</strong>
-                        The greeting message displays the current
-                        value of UserName using Razor syntax
-                        (@@UserName).
-                    </p>
-
                 </div>
+            </div>
 
+            <div class="explanation-item">
+                <div class="exp-dot"></div>
+                <div>
+                    <strong style="font-size:0.92rem;">One-Way Binding</strong>
+                    <p style="color:#6B7280; font-size:0.87rem; margin:4px 0 0;">
+                        The greeting message reads <code>@@UserName</code> — it only flows
+                        from the model to the UI, not back.
+                    </p>
+                </div>
+            </div>
+
+            <div class="explanation-item">
+                <div class="exp-dot"></div>
+                <div>
+                    <strong style="font-size:0.92rem;">Conditional Rendering</strong>
+                    <p style="color:#6B7280; font-size:0.87rem; margin:4px 0 0;">
+                        The <code>@@if</code> block swaps between the greeting card and the
+                        warning banner based on whether the input is empty.
+                    </p>
+                </div>
             </div>
 
         </div>
-
     </div>
 
 </div>
 
 @code
 {
-    // Stores the user's name entered in the textbox.
     private string UserName = string.Empty;
 }

@@ -1,109 +1,52 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Home — Greeting Binding</PageTitle>
 
-<div class="container mt-5">
+<div style="padding: 2rem;">
 
-    <div class="card shadow-lg border-0">
-
-        <div class="card-body text-center p-5">
-
-            <h1 class="display-4 fw-bold text-primary">
-                Application 01
-            </h1>
-
-            <h2 class="mb-4">
-                Greeting Binding
-            </h2>
-
-            <p class="lead text-muted">
-                Visual Programming Assignment 04
-            </p>
-
-            <hr class="my-4" />
-
-            <div class="row mt-4">
-
-                <div class="col-md-4 mb-3">
-
-                    <div class="card h-100 shadow-sm">
-
-                        <div class="card-body">
-
-                            <h5 class="text-primary">
-                                Objective
-                            </h5>
-
-                            <p>
-                                Demonstrates the concepts required
-                                in this application.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <div class="card h-100 shadow-sm">
-
-                        <div class="card-body">
-
-                            <h5 class="text-success">
-                                Technologies
-                            </h5>
-
-                            <p>
-                                Blazor, Razor Components,
-                                Bootstrap and .NET 10.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-4 mb-3">
-
-                    <div class="card h-100 shadow-sm">
-
-                        <div class="card-body">
-
-                            <h5 class="text-danger">
-                                Features
-                            </h5>
-
-                            <p>
-                                Interactive user interface with
-                                modern responsive design.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+    <div class="hero-section">
+        <div style="position:relative; z-index:1;">
+            <div style="font-size:0.8rem; font-weight:700; letter-spacing:1px; opacity:0.75; text-transform:uppercase; margin-bottom:0.5rem;">
+                Visual Programming · Lab 04
             </div>
+            <h1>Application 01</h1>
+            <p>Greeting Binding — Blazor Two-Way &amp; One-Way Data Binding Demo</p>
+        </div>
+    </div>
 
-            <div class="alert alert-info mt-4">
+    <div class="row g-3 mb-4">
 
-                <strong>
-                    Student Assignment Project
-                </strong>
-
-                <br />
-
-                This application demonstrates the required
-                concepts of the Visual Programming Lab.
-
+        <div class="col-md-4">
+            <div class="feature-card purple">
+                <div class="feature-icon">🎯</div>
+                <h5>Objective</h5>
+                <p>Demonstrate two-way and one-way data binding using Blazor's <code>@@bind</code> directive.</p>
             </div>
-
         </div>
 
+        <div class="col-md-4">
+            <div class="feature-card green">
+                <div class="feature-icon">⚙️</div>
+                <h5>Technologies</h5>
+                <p>Blazor Server, Razor Components, Bootstrap 5, .NET 10.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card amber">
+                <div class="feature-icon">✨</div>
+                <h5>Features</h5>
+                <p>Live greeting preview, reactive state management, animated feedback.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="info-badge">
+        <span style="font-size:1.3rem;">📘</span>
+        <span>
+            <strong>Student Assignment Project</strong> — Visual Programming Lab · Demonstrates core Blazor data binding concepts.
+        </span>
     </div>
 
 </div>
