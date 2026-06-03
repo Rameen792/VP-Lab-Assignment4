@@ -9,3 +9,6 @@
     --danger: #991B1B;
     --text: #111827;
 }
+body {
+    background-color: var(--background);
+}
