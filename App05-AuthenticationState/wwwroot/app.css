@@ -377,3 +377,217 @@ html, body {
         transform: translateY(-2px);
         filter: brightness(1.08);
     }
+.profile-section {
+    animation: fadeUp 0.4s ease;
+}
+
+.profile-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    margin-bottom: 8px;
+    transition: var(--transition);
+}
+
+    .profile-row:hover {
+        border-color: var(--accent);
+        box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .profile-row .profile-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .profile-row .profile-key {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-row .profile-value {
+        font-size: 0.93rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+.status-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+}
+
+    .status-bar.authenticated {
+        background: var(--success-bg);
+        color: #065F46;
+        border: 1.5px solid #6EE7B7;
+    }
+
+    .status-bar.unauthenticated {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        border: 1.5px solid #FECDD3;
+    }
+
+.feature-card {
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    height: 100%;
+    border: 1.5px solid var(--border);
+    background: white;
+    transition: var(--transition);
+}
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent);
+    }
+
+    .feature-card .feature-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card.rose .feature-icon {
+        background: #FFE4E6;
+    }
+
+    .feature-card.green .feature-icon {
+        background: #D1FAE5;
+    }
+
+    .feature-card.amber .feature-icon {
+        background: #FEF3C7;
+    }
+
+    .feature-card h5 {
+        font-size: 0.97rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+    }
+
+    .feature-card p {
+        font-size: 0.87rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+.info-badge {
+    background: linear-gradient(135deg, var(--primary-light), #FECDD3);
+    border: 1px solid #FCA5A5;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+}
+
+.explanation-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+    .explanation-item:last-child {
+        border-bottom: none;
+    }
+
+    .explanation-item .exp-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--primary);
+        border-radius: 50%;
+        margin-top: 6px;
+        flex-shrink: 0;
+    }
+
+code {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.88em;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.form-control {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background: #FAFAFA;
+    width: 100%;
+}
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+        outline: none;
+        background: white;
+    }
+
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 1.5rem 0;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+}
+
+@media (max-width: 640px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        min-width: unset;
+        position: relative;
+    }
+
+    .hero-section h1 {
+        font-size: 1.5rem;
+    }
+}
