@@ -1,36 +1,66 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">App05-AuthenticationState</a>
+﻿@using App05_AuthenticationState.Services
+@inject AuthenticationStateService AuthService
+@implements IDisposable
+
+<div class="sidebar d-flex flex-column">
+
+    <div class="top-row">
+        <a class="navbar-brand" href="">
+            🔴 App05
+        </a>
     </div>
+
+    <div class="sidebar-brand">
+        <div class="app-badge">
+            <span>VP</span>
+            <span>Lab 04</span>
+        </div>
+        <h5>Authentication State</h5>
+        <p>Service-based Auth Demo</p>
+    </div>
+
+    <div class="auth-status-pill @(AuthService.IsAuthenticated ? "logged-in" : "logged-out")">
+        <div class="auth-dot @(AuthService.IsAuthenticated ? "online" : "offline")"></div>
+        @(AuthService.IsAuthenticated ? "Authenticated" : "Not Logged In")
+    </div>
+
+    <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+    <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+        <nav class="nav flex-column">
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    🏠 Home
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="login">
+                    🔑 Login / Logout
+                </NavLink>
+            </div>
+
+            <div class="nav-item">
+                <NavLink class="nav-link" href="user-profile">
+                    👤 User Profile
+                </NavLink>
+            </div>
+
+        </nav>
+    </div>
+
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+@code
+{
+    protected override void OnInitialized()
+    {
+        AuthService.OnChange += StateHasChanged;
+    }
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link"
-                     href="login">
-
-                Login
-
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link"
-                     href="user-profile">
-
-                User Profile
-
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
+    public void Dispose()
+    {
+        AuthService.OnChange -= StateHasChanged;
+    }
+}
