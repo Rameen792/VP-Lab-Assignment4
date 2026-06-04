@@ -1,0 +1,540 @@
+﻿@page "/todo-list"
+@rendermode InteractiveServer
+@using App08_ToDoList.Data
+@using App08_ToDoList.Models
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext Db
+
+<PageTitle>Task Manager — App08</PageTitle>
+
+<div class="todo-wrapper">
+
+    <div class="todo-header">
+        <div class="todo-header-icon">📋</div>
+        <div>
+            <h1 class="todo-title">Task Manager</h1>
+            <p class="todo-subtitle">@_tasks.Count task(s) total · @_tasks.Count(t => t.IsCompleted) completed</p>
+        </div>
+    </div>
+
+    @if (_errorMessage != null)
+    {
+        <div class="alert-box alert-error">⚠️ @_errorMessage</div>
+    }
+
+    @if (_successMessage != null)
+    {
+        <div class="alert-box alert-success">✅ @_successMessage</div>
+    }
+
+    <!-- Add Task Row -->
+    <div class="add-task-row">
+        <input class="task-input"
+               placeholder="Enter a new task..."
+               @bind="_newTaskTitle"
+               @bind:event="oninput"
+               @onkeydown="HandleKeyDown" />
+        <button class="btn-primary-action" @onclick="AddTask" disabled="@_isSaving">
+            @(_isSaving ? "Adding..." : "+ Add Task")
+        </button>
+        <button class="btn-danger-action" @onclick="ClearAllTasks" disabled="@(!_tasks.Any())">
+            🗑 Clear All
+        </button>
+    </div>
+
+    <!-- Task List -->
+    @if (_isLoading)
+    {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <span>Loading tasks...</span>
+        </div>
+    }
+    else if (!_tasks.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">✨</div>
+            <p>No tasks yet. Add one above!</p>
+        </div>
+    }
+    else
+    {
+        <ul class="task-list">
+            @foreach (var task in _tasks)
+            {
+                <li class="task-item @(task.IsCompleted ? "completed" : "")">
+
+                    <!-- Checkbox -->
+                    <input type="checkbox"
+                           class="task-checkbox"
+                           checked="@task.IsCompleted"
+                           @onchange="() => ToggleComplete(task)" />
+
+                    <!-- Title — inline edit mode -->
+                    @if (_editingId == task.Id)
+                    {
+                        <input class="task-edit-input"
+                               @bind="_editTitle"
+                               @bind:event="oninput"
+                               @onkeydown="e => HandleEditKeyDown(e, task)" />
+                    }
+                    else
+                    {
+                        <span class="task-title">@task.Title</span>
+                    }
+
+                    <!-- Action Buttons -->
+                    <div class="task-actions">
+                        @if (_editingId == task.Id)
+                        {
+                            <button class="btn-save" @onclick="() => SaveEdit(task)" title="Save">💾 Save</button>
+                            <button class="btn-cancel" @onclick="CancelEdit" title="Cancel">✕ Cancel</button>
+                        }
+                        else
+                        {
+                            <button class="btn-edit" @onclick="() => StartEdit(task)" title="Edit">✏️</button>
+                            <button class="btn-delete" @onclick="() => DeleteTask(task)" title="Delete">🗑️</button>
+                        }
+                    </div>
+
+                </li>
+            }
+        </ul>
+    }
+
+</div>
+
+<style>
+    .todo-wrapper {
+        max-width: 680px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    }
+
+    .todo-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding: 1.75rem 2rem;
+        background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+        border-radius: 20px;
+        color: white;
+        box-shadow: 0 8px 32px rgba(44, 62, 80, 0.3);
+    }
+
+    .todo-header-icon {
+        font-size: 2.5rem;
+    }
+
+    .todo-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0;
+        color: white;
+    }
+
+    .todo-subtitle {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.7);
+        margin: 0.2rem 0 0;
+    }
+
+    .alert-box {
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .alert-error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+    }
+
+    .alert-success {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #16a34a;
+    }
+
+    .add-task-row {
+        display: flex;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .task-input {
+        flex: 1;
+        min-width: 200px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.2s;
+        background: white;
+    }
+
+        .task-input:focus {
+            border-color: #2C3E50;
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+
+    .btn-primary-action {
+        padding: 0.75rem 1.25rem;
+        background: #2C3E50;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+        white-space: nowrap;
+    }
+
+        .btn-primary-action:hover:not(:disabled) {
+            background: #1a252f;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(44,62,80,0.3);
+        }
+
+        .btn-primary-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .btn-danger-action {
+        padding: 0.75rem 1.1rem;
+        background: white;
+        color: #dc2626;
+        border: 2px solid #fecaca;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+        white-space: nowrap;
+    }
+
+        .btn-danger-action:hover:not(:disabled) {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
+
+        .btn-danger-action:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+    .loading-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 3rem;
+        color: #64748b;
+    }
+
+    .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid #e2e8f0;
+        border-top-color: #2C3E50;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #94a3b8;
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .task-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: white;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 0.9rem 1.1rem;
+        transition: all 0.2s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+        .task-item:hover {
+            border-color: #2C3E50;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.1);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            background: #f8fafc;
+        }
+
+    .task-checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: #2C3E50;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .task-title {
+        flex: 1;
+        font-size: 0.9rem;
+        color: #1e293b;
+        line-height: 1.5;
+    }
+
+    .completed .task-title {
+        text-decoration: line-through;
+        color: #94a3b8;
+    }
+
+    .task-edit-input {
+        flex: 1;
+        padding: 0.4rem 0.75rem;
+        border: 2px solid #2C3E50;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        outline: none;
+        background: #f8fafc;
+    }
+
+    .task-actions {
+        display: flex;
+        gap: 0.4rem;
+        flex-shrink: 0;
+    }
+
+    .btn-edit, .btn-delete, .btn-save, .btn-cancel {
+        padding: 0.35rem 0.65rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-family: inherit;
+        font-weight: 500;
+        transition: all 0.15s;
+    }
+
+    .btn-edit {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+        .btn-edit:hover {
+            background: #dbeafe;
+        }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+    .btn-save {
+        background: #2C3E50;
+        color: white;
+    }
+
+        .btn-save:hover {
+            background: #1a252f;
+        }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+</style>
+
+@code {
+    private List<TaskItem> _tasks = new();
+    private string _newTaskTitle = string.Empty;
+    private int _editingId = -1;
+    private string _editTitle = string.Empty;
+    private bool _isLoading = true;
+    private bool _isSaving = false;
+    private string? _errorMessage;
+    private string? _successMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasks();
+    }
+
+    private async Task LoadTasks()
+    {
+        try
+        {
+            _isLoading = true;
+            _tasks = await Db.Tasks.OrderByDescending(t => t.CreatedAt).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Could not load tasks: {ex.Message}";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task AddTask()
+    {
+        if (string.IsNullOrWhiteSpace(_newTaskTitle)) return;
+        _isSaving = true;
+        _errorMessage = null;
+        try
+        {
+            var task = new TaskItem { Title = _newTaskTitle.Trim() };
+            Db.Tasks.Add(task);
+            await Db.SaveChangesAsync();
+            _newTaskTitle = string.Empty;
+            await LoadTasks();
+            ShowSuccess("Task added!");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to add task: {ex.Message}";
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
+    private async Task DeleteTask(TaskItem task)
+    {
+        _errorMessage = null;
+        try
+        {
+            Db.Tasks.Remove(task);
+            await Db.SaveChangesAsync();
+            await LoadTasks();
+            ShowSuccess("Task deleted.");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to delete: {ex.Message}";
+        }
+    }
+
+    private async Task ClearAllTasks()
+    {
+        _errorMessage = null;
+        try
+        {
+            Db.Tasks.RemoveRange(_tasks);
+            await Db.SaveChangesAsync();
+            _tasks.Clear();
+            ShowSuccess("All tasks cleared.");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to clear: {ex.Message}";
+        }
+    }
+
+    private void StartEdit(TaskItem task)
+    {
+        _editingId = task.Id;
+        _editTitle = task.Title;
+    }
+
+    private void CancelEdit() => _editingId = -1;
+
+    private async Task SaveEdit(TaskItem task)
+    {
+        if (string.IsNullOrWhiteSpace(_editTitle)) return;
+        _errorMessage = null;
+        try
+        {
+            task.Title = _editTitle.Trim();
+            Db.Tasks.Update(task);
+            await Db.SaveChangesAsync();
+            _editingId = -1;
+            ShowSuccess("Task updated.");
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to save: {ex.Message}";
+        }
+    }
+
+    private async Task ToggleComplete(TaskItem task)
+    {
+        task.IsCompleted = !task.IsCompleted;
+        try
+        {
+            Db.Tasks.Update(task);
+            await Db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to update: {ex.Message}";
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await AddTask();
+    }
+
+    private async Task HandleEditKeyDown(KeyboardEventArgs e, TaskItem task)
+    {
+        if (e.Key == "Enter") await SaveEdit(task);
+        if (e.Key == "Escape") CancelEdit();
+    }
+
+    private void ShowSuccess(string msg)
+    {
+        _successMessage = msg;
+        _ = ClearSuccessAfterDelay();
+    }
+
+    private async Task ClearSuccessAfterDelay()
+    {
+        await Task.Delay(2500);
+        _successMessage = null;
+        StateHasChanged();
+    }
+}
