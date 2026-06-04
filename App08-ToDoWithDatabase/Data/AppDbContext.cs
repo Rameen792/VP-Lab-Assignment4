@@ -1,24 +1,9 @@
-﻿using App08_ToDoWithDatabase.Models;
+﻿using App08_ToDoList.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace App08_ToDoWithDatabase.Data;
+namespace App08_ToDoList.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-    public DbSet<TodoTask> TodoTasks => Set<TodoTask>();
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<TodoTask>(entity =>
-        {
-            entity.ToTable("todo_tasks");
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Title).IsRequired().HasMaxLength(500);
-            entity.Property(e => e.Priority).HasDefaultValue("Medium");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("NOW()");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("NOW()");
-        });
-    }
+    public DbSet<TaskItem> Tasks => Set<TaskItem>();
 }
