@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 /* =====================
-   LIGHT MODE (default)
+   LIGHT MODE VARIABLES
 ===================== */
 body.light-mode {
     --bg-primary: #f5f0e8;
@@ -24,7 +24,7 @@ body.light-mode {
 }
 
 /* =====================
-   DARK MODE
+   DARK MODE VARIABLES
 ===================== */
 body.dark-mode {
     --bg-primary: #111318;
@@ -47,7 +47,7 @@ body.dark-mode {
 }
 
 /* =====================
-   BASE RESET & GLOBAL
+   HARD RESET — kills Bootstrap's white override
 ===================== */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -55,16 +55,23 @@ body.dark-mode {
     padding: 0;
 }
 
+/* Override Bootstrap's --bs-body-bg and --bs-body-color */
+:root {
+    --bs-body-bg: transparent !important;
+    --bs-body-color: inherit !important;
+}
+
 html {
     transition: background 0.3s, color 0.3s;
 }
 
+/* body background — !important beats Bootstrap */
 body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif !important;
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
     min-height: 100vh;
-    transition: background 0.3s, color 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* =====================
@@ -73,11 +80,12 @@ body {
 .page {
     display: flex;
     min-height: 100vh;
+    background-color: var(--bg-primary);
 }
 
 .sidebar {
     width: 250px;
-    background: var(--sidebar-bg);
+    background: var(--sidebar-bg) !important;
     position: fixed;
     top: 0;
     left: 0;
@@ -94,11 +102,13 @@ main {
     flex: 1;
     display: flex;
     flex-direction: column;
+    background-color: var(--bg-primary);
+    transition: background-color 0.3s;
 }
 
 .top-row {
-    background: var(--bg-elevated);
-    border-bottom: 1px solid var(--border);
+    background-color: var(--bg-elevated) !important;
+    border-bottom: 1px solid var(--border) !important;
     padding: 0.75rem 2rem;
     display: flex;
     align-items: center;
@@ -121,6 +131,9 @@ main {
 .content {
     padding: 2rem;
     flex: 1;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* =====================
@@ -181,8 +194,8 @@ main {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    background: var(--btn-toggle-bg);
-    color: var(--btn-toggle-text);
+    background: var(--btn-toggle-bg) !important;
+    color: var(--btn-toggle-text) !important;
     border: none;
     padding: 0.55rem 1.25rem;
     border-radius: 100px;
@@ -212,25 +225,38 @@ body.dark-mode .toggle-icon {
    CARDS
 ===================== */
 .card-surface {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
     border-radius: 16px;
     padding: 1.75rem;
     transition: background 0.3s, border-color 0.3s;
     box-shadow: var(--shadow);
+    color: var(--text-primary);
 }
 
     .card-surface:hover {
-        border-color: var(--accent);
+        border-color: var(--accent) !important;
         box-shadow: 0 8px 32px var(--accent-glow);
     }
+
+/* Kill Bootstrap card white background too */
+.card {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+}
+
+.card-body {
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+}
 
 /* =====================
    BUTTONS
 ===================== */
 .btn-accent {
     background: var(--accent);
-    color: white;
+    color: white !important;
     border: none;
     padding: 0.65rem 1.5rem;
     border-radius: 10px;
@@ -249,13 +275,14 @@ body.dark-mode .toggle-icon {
         background: var(--accent-hover);
         transform: translateY(-1px);
         box-shadow: 0 6px 20px var(--accent-glow);
+        color: white !important;
     }
 
 /* =====================
    HERO
 ===================== */
 .theme-hero {
-    background: var(--bg-elevated);
+    background-color: var(--bg-elevated) !important;
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 3rem;
@@ -295,14 +322,14 @@ body.dark-mode .toggle-icon {
     font-family: 'Playfair Display', serif;
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     margin-bottom: 0.75rem;
     transition: color 0.3s;
     line-height: 1.2;
 }
 
 .hero-body {
-    color: var(--text-secondary);
+    color: var(--text-secondary) !important;
     font-size: 1rem;
     line-height: 1.7;
     max-width: 520px;
@@ -334,8 +361,17 @@ body.dark-mode .toggle-icon {
     line-height: 1.6;
 }
 
+    /* code tags inside features */
+    .feature-desc code, p code {
+        color: var(--accent);
+        background: var(--accent-glow);
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        font-size: 0.85em;
+    }
+
 /* =====================
-   THEME DEMO BOX
+   THEME DEMO PAGE
 ===================== */
 .demo-swatch {
     width: 48px;
@@ -352,8 +388,41 @@ body.dark-mode .toggle-icon {
         transform: scale(1.1);
     }
 
+/* Headings on demo page */
+h5 {
+    color: var(--text-primary) !important;
+}
+
+h2, h3, h4, h6 {
+    color: var(--text-primary);
+    transition: color 0.3s;
+}
+
+p {
+    color: var(--text-secondary);
+}
+
+/* Monospace/code block on demo page */
+div[style*="font-family:monospace"],
+[style*="fontFamily: monospace"] {
+    background-color: var(--bg-secondary) !important;
+    color: var(--accent) !important;
+    border-color: var(--border) !important;
+}
+
+/* Input fields */
+input:not([type=checkbox]):not([type=radio]) {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+}
+
+input::placeholder {
+    color: var(--text-muted) !important;
+}
+
 /* =====================
-   ERROR
+   ERROR UI
 ===================== */
 #blazor-error-ui {
     background: #b32121;
@@ -384,3 +453,4 @@ body.dark-mode .toggle-icon {
     color: #e50000;
     font-size: 0.8rem;
 }
+
