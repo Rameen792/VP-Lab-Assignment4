@@ -5,17 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="App07-ThemeSwitcher.styles.css" />
     <script>
         (function() {
             var t = localStorage.getItem('theme');
             document.body.classList.add(t === 'dark' ? 'dark-mode' : 'light-mode');
         })();
     </script>
-    <ResourcePreloader />
-    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
-    <link rel="stylesheet" href="@Assets["app.css"]" />
-    <link rel="stylesheet" href="@Assets["App07-ThemeSwitcher.styles.css"]" />
     <ImportMap />
+    <ResourcePreloader />
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet />
 </head>
