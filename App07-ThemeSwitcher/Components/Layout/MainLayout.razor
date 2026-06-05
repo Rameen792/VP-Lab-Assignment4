@@ -32,9 +32,9 @@
     {
         if (firstRender)
         {
-            var saved = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+            var saved = await JS.InvokeAsync<string?>("localStorage.getItem", "theme");
             _isDark = saved == "dark";
-            await ApplyTheme();
+            await ApplyTheme(notify: false);
             StateHasChanged();
         }
     }
@@ -42,15 +42,16 @@
     private async Task ToggleTheme()
     {
         _isDark = !_isDark;
-        await ApplyTheme();
-        await JS.InvokeVoidAsync("localStorage.setItem", "theme", _isDark ? "dark" : "light");
+        await ApplyTheme(notify: true);
     }
 
-    private async Task ApplyTheme()
+    private async Task ApplyTheme(bool notify)
     {
-        var cls = _isDark ? "dark-mode" : "light-mode";
+        var add = _isDark ? "dark-mode" : "light-mode";
         var remove = _isDark ? "light-mode" : "dark-mode";
         await JS.InvokeVoidAsync("eval",
-            $"document.body.classList.remove('{remove}'); document.body.classList.add('{cls}');");
+            $"document.body.classList.remove('{remove}'); document.body.classList.add('{add}');");
+        if (notify)
+            await JS.InvokeVoidAsync("localStorage.setItem", "theme", _isDark ? "dark" : "light");
     }
 }

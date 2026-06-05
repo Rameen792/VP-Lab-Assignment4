@@ -6,5 +6,4 @@
   <Project Path="App05-AuthenticationState/App05-AuthenticationState.csproj" />
   <Project Path="App06-NotificationService/App06-NotificationService.csproj" />
   <Project Path="App07-ThemeSwitcher/App07-ThemeSwitcher.csproj" />
-  <Project Path="App08-ToDoWithDatabase/App08-ToDoWithDatabase.csproj" />
 </Solution>
