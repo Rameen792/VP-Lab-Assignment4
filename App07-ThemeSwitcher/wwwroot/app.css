@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 /* =====================
    LIGHT MODE VARIABLES
@@ -47,7 +47,7 @@ body.dark-mode {
 }
 
 /* =====================
-   HARD RESET � kills Bootstrap's white override
+   HARD RESET  kills Bootstrap's white override
 ===================== */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -57,15 +57,38 @@ body.dark-mode {
 
 /* Override Bootstrap's --bs-body-bg and --bs-body-color */
 :root {
+    /* Bootstrap overrides */
     --bs-body-bg: transparent !important;
     --bs-body-color: inherit !important;
+    /* ── DEFAULT (light) theme variables ──────────────────────────────
+       These are overridden by body.light-mode / body.dark-mode but they
+       act as a fallback so every var() resolves even before Blazor
+       attaches the class, preventing invisible buttons / blank cards.
+    ──────────────────────────────────────────────────────────────── */
+    --bg-primary: #f5f0e8;
+    --bg-secondary: #ede8dc;
+    --bg-card: #fdfaf4;
+    --bg-elevated: #ffffff;
+    --border: rgba(0, 0, 0, 0.1);
+    --text-primary: #1a1612;
+    --text-secondary: #5c5448;
+    --text-muted: #9c9080;
+    --accent: #c8621a;
+    --accent-hover: #b35516;
+    --accent-glow: rgba(200, 98, 26, 0.15);
+    --sidebar-bg: #1a1612;
+    --sidebar-text: #c9bfb0;
+    --sidebar-active: #c8621a;
+    --btn-toggle-bg: #1a1612;
+    --btn-toggle-text: #f5f0e8;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
 html {
     transition: background 0.3s, color 0.3s;
 }
 
-/* body background � !important beats Bootstrap */
+/* body background  !important beats Bootstrap */
 body {
     font-family: 'DM Sans', sans-serif !important;
     background-color: var(--bg-primary) !important;
@@ -98,7 +121,7 @@ body {
 }
 
 main {
-    margin-left: 250px;
+    margin-left: 50px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -131,6 +154,7 @@ main {
 .content {
     padding: 2rem;
     flex: 1;
+    min-height: 100vh;
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s, color 0.3s;
@@ -453,4 +477,3 @@ input::placeholder {
     color: #e50000;
     font-size: 0.8rem;
 }
-

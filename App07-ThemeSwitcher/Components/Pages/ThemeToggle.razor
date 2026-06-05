@@ -1,0 +1,31 @@
+﻿@rendermode InteractiveServer
+@inject IJSRuntime JS
+
+<button class="theme-toggle-btn" @onclick="ToggleTheme">
+    <span class="toggle-icon">@(_isDark ? "☀️" : "🌙")</span>
+    @(_isDark ? "Switch to Light Mode" : "Switch to Dark Mode")
+</button>
+
+@code {
+    private bool _isDark = true; // default dark
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var saved = await JS.InvokeAsync<string?>("localStorage.getItem", "theme");
+            // If nothing saved yet, default is dark; only go light if explicitly saved as "light"
+            _isDark = saved != "light";
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        _isDark = !_isDark;
+        var add = _isDark ? "dark-mode" : "light-mode";
+        var remove = _isDark ? "light-mode" : "dark-mode";
+        await JS.InvokeVoidAsync("themeSwitch", add, remove);
+        await JS.InvokeVoidAsync("localStorage.setItem", "theme", _isDark ? "dark" : "light");
+    }
+}

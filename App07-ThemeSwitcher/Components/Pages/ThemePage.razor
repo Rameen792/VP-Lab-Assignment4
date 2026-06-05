@@ -9,22 +9,51 @@
     <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; color:var(--text-primary); margin-bottom:0.5rem;">
         Theme Palette Preview
     </h2>
-    <p style="color:var(--text-secondary);">Toggle the mode from the top bar to see every element adapt.</p>
+    <p style="color:var(--text-secondary);">Click a palette below to switch the theme live.</p>
 </div>
 
-<!-- Colour Swatches -->
+<!-- Clickable Theme Palettes -->
 <div class="card-surface" style="margin-bottom:1.25rem;">
     <h5 style="font-weight:700; margin-bottom:1rem; color:var(--text-primary);">🎨 Active Palette</h5>
-    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
-        <div class="demo-swatch" style="background:var(--bg-primary);" title="bg-primary"></div>
-        <div class="demo-swatch" style="background:var(--bg-secondary);" title="bg-secondary"></div>
-        <div class="demo-swatch" style="background:var(--bg-card);" title="bg-card"></div>
-        <div class="demo-swatch" style="background:var(--bg-elevated);" title="bg-elevated"></div>
-        <div class="demo-swatch" style="background:var(--accent);" title="accent"></div>
-        <div class="demo-swatch" style="background:var(--text-primary);" title="text-primary"></div>
-        <div class="demo-swatch" style="background:var(--text-secondary);" title="text-secondary"></div>
+    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">Click any palette to apply it instantly.</p>
+
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+
+        <!-- Light palette -->
+        <div @onclick='() => ApplyTheme("light")'
+             style="cursor:pointer; border-radius:14px; border: 2px solid @(_currentTheme == "light" ? "var(--accent)" : "var(--border)");
+                    padding:0.75rem; transition:all 0.2s; background:var(--bg-elevated);">
+            <div style="display:flex; gap:6px; margin-bottom:0.5rem;">
+                <div style="width:28px;height:28px;border-radius:8px;background:#f5f0e8;border:1px solid rgba(0,0,0,0.1);"></div>
+                <div style="width:28px;height:28px;border-radius:8px;background:#fdfaf4;border:1px solid rgba(0,0,0,0.1);"></div>
+                <div style="width:28px;height:28px;border-radius:8px;background:#c8621a;border:1px solid rgba(0,0,0,0.1);"></div>
+                <div style="width:28px;height:28px;border-radius:8px;background:#1a1612;border:1px solid rgba(0,0,0,0.1);"></div>
+            </div>
+            <div style="font-size:0.78rem; font-weight:600; color:var(--text-primary);">☀️ Light</div>
+            @if (_currentTheme == "light")
+            {
+                <div style="font-size:0.7rem; color:var(--accent); margin-top:2px;">● Active</div>
+            }
+        </div>
+
+        <!-- Dark palette -->
+        <div @onclick='() => ApplyTheme("dark")'
+             style="cursor:pointer; border-radius:14px; border: 2px solid @(_currentTheme == "dark" ? "var(--accent)" : "var(--border)");
+                    padding:0.75rem; transition:all 0.2s; background:var(--bg-elevated);">
+            <div style="display:flex; gap:6px; margin-bottom:0.5rem;">
+                <div style="width:28px;height:28px;border-radius:8px;background:#111318;border:1px solid rgba(255,255,255,0.1);"></div>
+                <div style="width:28px;height:28px;border-radius:8px;background:#1e2129;border:1px solid rgba(255,255,255,0.1);"></div>
+                <div style="width:28px;height:28px;border-radius:8px;background:#f0b429;border:1px solid rgba(255,255,255,0.1);"></div>
+                <div style="width:28px;height:28px;border-radius:8px;background:#eceef4;border:1px solid rgba(255,255,255,0.1);"></div>
+            </div>
+            <div style="font-size:0.78rem; font-weight:600; color:var(--text-primary);">🌙 Dark</div>
+            @if (_currentTheme == "dark")
+            {
+                <div style="font-size:0.7rem; color:var(--accent); margin-top:2px;">● Active</div>
+            }
+        </div>
+
     </div>
-    <p style="font-size:0.8rem; color:var(--text-muted);">Swatches update live when you toggle the theme.</p>
 </div>
 
 <!-- Typography showcase -->
@@ -44,7 +73,7 @@
     <h5 style="font-weight:700; margin-bottom:1rem; color:var(--text-primary);">🖱️ Interactive Elements</h5>
     <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; margin-bottom:1rem;">
         <button class="btn-accent">Primary Action</button>
-        <button style="background:transparent; border:1.5px solid var(--accent); color:var(--accent); padding:0.6rem 1.4rem; border-radius:10px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s;" onmouseover="this.style.background='var(--accent-glow)'" onmouseout="this.style.background='transparent'">
+        <button style="background:transparent; border:1.5px solid var(--accent); color:var(--accent); padding:0.6rem 1.4rem; border-radius:10px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s;">
             Outline Button
         </button>
     </div>
@@ -65,14 +94,29 @@
 </div>
 
 @code {
-    private string _savedTheme = "not loaded yet";
+    private string _savedTheme = "loading...";
+    private string _currentTheme = "dark"; // mirrors what's on body
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme") ?? "null";
+            var saved = await JS.InvokeAsync<string?>("localStorage.getItem", "theme") ?? "dark";
+            _savedTheme = saved;
+            _currentTheme = saved;
             StateHasChanged();
         }
+    }
+
+    private async Task ApplyTheme(string theme)
+    {
+        _currentTheme = theme;
+        _savedTheme = theme;
+
+        var add = theme == "dark" ? "dark-mode" : "light-mode";
+        var remove = theme == "dark" ? "light-mode" : "dark-mode";
+
+        await JS.InvokeVoidAsync("themeSwitch", add, remove);
+        await JS.InvokeVoidAsync("localStorage.setItem", "theme", theme);
     }
 }

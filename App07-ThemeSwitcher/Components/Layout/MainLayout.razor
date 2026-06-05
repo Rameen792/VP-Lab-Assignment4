@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JS
 
 <div class="page">
     <div class="sidebar">
@@ -8,10 +7,7 @@
 
     <main>
         <div class="top-row">
-            <button class="theme-toggle-btn" @onclick="ToggleTheme">
-                <span class="toggle-icon">@(_isDark ? "☀️" : "🌙")</span>
-                @(_isDark ? "Switch to Light Mode" : "Switch to Dark Mode")
-            </button>
+            <ThemeToggle />
         </div>
         <article class="content">
             @Body
@@ -24,34 +20,3 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
-
-@code {
-    private bool _isDark = false;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var saved = await JS.InvokeAsync<string?>("localStorage.getItem", "theme");
-            _isDark = saved == "dark";
-            await ApplyTheme(notify: false);
-            StateHasChanged();
-        }
-    }
-
-    private async Task ToggleTheme()
-    {
-        _isDark = !_isDark;
-        await ApplyTheme(notify: true);
-    }
-
-    private async Task ApplyTheme(bool notify)
-    {
-        var add = _isDark ? "dark-mode" : "light-mode";
-        var remove = _isDark ? "light-mode" : "dark-mode";
-        await JS.InvokeVoidAsync("eval",
-            $"document.body.classList.remove('{remove}'); document.body.classList.add('{add}');");
-        if (notify)
-            await JS.InvokeVoidAsync("localStorage.setItem", "theme", _isDark ? "dark" : "light");
-    }
-}
