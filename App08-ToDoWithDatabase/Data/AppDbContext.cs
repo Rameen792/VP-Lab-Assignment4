@@ -1,16 +1,12 @@
-﻿using App08_ToDoWithDatabase.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using TodoApp.Models;
 
-namespace App08_ToDoWithDatabase.Data;
+namespace TodoApp.Data;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(
-        DbContextOptions<AppDbContext> options)
-        : base(options)
-    {
-    }
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options) { }
 
-    public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+    public DbSet<TodoItem> Todos { get; set; } = null!;
 }

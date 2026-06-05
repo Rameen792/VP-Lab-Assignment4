@@ -1,0 +1,295 @@
+﻿@page "/todo-database"
+@rendermode InteractiveServer
+@inject IDbContextFactory<TodoApp.Data.AppDbContext> DbFactory
+
+<PageTitle>Task Manager · TaskFlow</PageTitle>
+
+<div class="tm-header">
+    <div class="tm-header-left">
+        <div class="tm-tag">TASK MANAGER</div>
+        <h1 class="tm-title">Your Tasks</h1>
+        <p class="tm-sub">Synced with PostgreSQL · @DateTime.Now.ToString("dddd, MMM dd")</p>
+    </div>
+    <div class="tm-stats">
+        <div class="tm-stat">
+            <span class="tm-stat-num">@todos.Count</span>
+            <span class="tm-stat-label">Total</span>
+        </div>
+        <div class="tm-stat-div"></div>
+        <div class="tm-stat">
+            <span class="tm-stat-num" style="color:#22c55e">@todos.Count(t => t.IsCompleted)</span>
+            <span class="tm-stat-label">Done</span>
+        </div>
+        <div class="tm-stat-div"></div>
+        <div class="tm-stat">
+            <span class="tm-stat-num" style="color:#f59e0b">@todos.Count(t => !t.IsCompleted)</span>
+            <span class="tm-stat-label">Pending</span>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="tm-toast @(isError ? "tm-toast-error" : "tm-toast-ok")">
+        @statusMessage
+    </div>
+}
+
+<!-- ADD TASK -->
+<div class="tm-add-box">
+    <div class="tm-add-inner">
+        <input class="tm-input"
+               placeholder="What needs to be done today?"
+               @bind="newTaskTitle"
+               @bind:event="oninput"
+               @onkeydown="HandleKeyDown" />
+        <button class="tm-btn-add @(isLoading ? "tm-btn-loading" : "")"
+                @onclick="AddTask"
+                disabled="@isLoading">
+            @if (isLoading)
+            {
+                <span class="tm-spinner"></span>
+            }
+            else
+            {
+                <span>+ Add</span>
+            }
+        </button>
+    </div>
+    @if (todos.Any(t => t.IsCompleted))
+    {
+        <button class="tm-btn-clear" @onclick="ClearCompleted">
+            🗑 Clear @todos.Count(t => t.IsCompleted) completed
+        </button>
+    }
+</div>
+
+<!-- TASK LIST -->
+<div class="tm-list-box">
+    @if (isLoadingList)
+    {
+        <div class="tm-empty">
+            <div class="tm-loading-ring"></div>
+            <p>Loading from database...</p>
+        </div>
+    }
+    else if (!todos.Any())
+    {
+        <div class="tm-empty">
+            <div class="tm-empty-icon">◎</div>
+            <p>No tasks yet — add one above!</p>
+        </div>
+    }
+    else
+    {
+        <div class="tm-list">
+            @foreach (var todo in todos.OrderByDescending(t => t.CreatedAt))
+            {
+                <div class="tm-task @(todo.IsCompleted ? "tm-task-done" : "") @(editingId == todo.Id ? "tm-task-editing" : "")">
+
+                    <label class="tm-check-wrap">
+                        <input type="checkbox"
+                               checked="@todo.IsCompleted"
+                               @onchange="() => ToggleTask(todo)" />
+                        <span class="tm-checkmark">@(todo.IsCompleted ? "✓" : "")</span>
+                    </label>
+
+                    <div class="tm-task-body">
+                        @if (editingId == todo.Id)
+                        {
+                            <input class="tm-edit-input"
+                                   @bind="editTitle"
+                                   @bind:event="oninput"
+                                   @onkeydown="(e) => HandleEditKey(e, todo)"
+                                   autofocus />
+                        }
+                        else
+                        {
+                            <span class="tm-task-title @(todo.IsCompleted ? "tm-done-text" : "")">@todo.Title</span>
+                            <span class="tm-task-meta">@todo.CreatedAt.ToLocalTime().ToString("MMM dd · h:mm tt")</span>
+                        }
+                    </div>
+
+                    <div class="tm-task-actions">
+                        @if (editingId == todo.Id)
+                        {
+                            <button class="tm-btn-save" @onclick="() => SaveEdit(todo)">Save</button>
+                            <button class="tm-btn-cancel" @onclick="CancelEdit">✕</button>
+                        }
+                        else
+                        {
+                            <button class="tm-btn-edit" @onclick="() => StartEdit(todo)">Edit</button>
+                            <button class="tm-btn-del" @onclick="() => DeleteTask(todo)">✕</button>
+                        }
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<TodoApp.Models.TodoItem> todos = new();
+    private string newTaskTitle = "";
+    private string statusMessage = "";
+    private bool isError = false;
+    private bool isLoading = false;
+    private bool isLoadingList = true;
+    private int? editingId = null;
+    private string editTitle = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasks();
+    }
+
+    private async Task LoadTasks()
+    {
+        isLoadingList = true;
+        try
+        {
+            using var db = DbFactory.CreateDbContext();
+            todos = await db.Todos.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"Error loading tasks: {ex.Message}", true);
+        }
+        finally
+        {
+            isLoadingList = false;
+        }
+    }
+
+    private async Task AddTask()
+    {
+        if (string.IsNullOrWhiteSpace(newTaskTitle)) return;
+        isLoading = true;
+        try
+        {
+            using var db = DbFactory.CreateDbContext();
+            var item = new TodoApp.Models.TodoItem
+            {
+                Title = newTaskTitle.Trim(),
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Todos.Add(item);
+            await db.SaveChangesAsync();
+            todos.Add(item);
+            newTaskTitle = "";
+            ShowStatus("Task added successfully!", false);
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"Error: {ex.InnerException?.Message ?? ex.Message}", true);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ToggleTask(TodoApp.Models.TodoItem todo)
+    {
+        todo.IsCompleted = !todo.IsCompleted;
+        try
+        {
+            using var db = DbFactory.CreateDbContext();
+            db.Todos.Update(todo);
+            await db.SaveChangesAsync();
+            ShowStatus(todo.IsCompleted ? "Marked as done!" : "Marked as pending.", false);
+        }
+        catch (Exception ex)
+        {
+            todo.IsCompleted = !todo.IsCompleted;
+            ShowStatus($"Error: {ex.Message}", true);
+        }
+    }
+
+    private async Task DeleteTask(TodoApp.Models.TodoItem todo)
+    {
+        try
+        {
+            using var db = DbFactory.CreateDbContext();
+            db.Todos.Remove(todo);
+            await db.SaveChangesAsync();
+            todos.Remove(todo);
+            ShowStatus("Task deleted.", false);
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"Error: {ex.Message}", true);
+        }
+    }
+
+    private void StartEdit(TodoApp.Models.TodoItem todo)
+    {
+        editingId = todo.Id;
+        editTitle = todo.Title;
+    }
+
+    private async Task SaveEdit(TodoApp.Models.TodoItem todo)
+    {
+        if (string.IsNullOrWhiteSpace(editTitle)) return;
+        todo.Title = editTitle.Trim();
+        try
+        {
+            using var db = DbFactory.CreateDbContext();
+            db.Todos.Update(todo);
+            await db.SaveChangesAsync();
+            editingId = null;
+            ShowStatus("Task updated!", false);
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"Error: {ex.Message}", true);
+        }
+    }
+
+    private void CancelEdit()
+    {
+        editingId = null;
+        editTitle = "";
+    }
+
+    private async Task ClearCompleted()
+    {
+        var done = todos.Where(t => t.IsCompleted).ToList();
+        if (!done.Any()) return;
+        try
+        {
+            using var db = DbFactory.CreateDbContext();
+            db.Todos.RemoveRange(done);
+            await db.SaveChangesAsync();
+            foreach (var t in done) todos.Remove(t);
+            ShowStatus($"Cleared {done.Count} completed task(s).", false);
+        }
+        catch (Exception ex)
+        {
+            ShowStatus($"Error: {ex.Message}", true);
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await AddTask();
+    }
+
+    private async Task HandleEditKey(KeyboardEventArgs e, TodoApp.Models.TodoItem todo)
+    {
+        if (e.Key == "Enter") await SaveEdit(todo);
+        if (e.Key == "Escape") CancelEdit();
+    }
+
+    private void ShowStatus(string msg, bool error)
+    {
+        statusMessage = msg;
+        isError = error;
+        _ = Task.Delay(3500).ContinueWith(_ =>
+        {
+            statusMessage = "";
+            InvokeAsync(StateHasChanged);
+        });
+    }
+}

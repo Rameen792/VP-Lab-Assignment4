@@ -1,48 +1,52 @@
-using App08_ToDoWithDatabase.Components;
-using App08_ToDoWithDatabase.Data;
+﻿using App08_ToDoWithDatabase.Components;
 using Microsoft.EntityFrameworkCore;
+using TodoApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Razor Components
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
-// PostgreSQL Database Connection
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-
-// Auto Create Database
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    db.Database.EnsureCreated();
+    var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
+    using var db = factory.CreateDbContext();
+    try
+    {
+        // EnsureCreated() silently does nothing when the DB already exists
+        // (even if the Todos table is missing). Use raw SQL to guarantee
+        // the table is always present regardless of prior DB state.
+        db.Database.ExecuteSqlRaw("""
+            CREATE TABLE IF NOT EXISTS "Todos" (
+                "Id"          SERIAL        PRIMARY KEY,
+                "Title"       TEXT          NOT NULL,
+                "IsCompleted" BOOLEAN       NOT NULL DEFAULT FALSE,
+                "CreatedAt"   TIMESTAMPTZ   NOT NULL DEFAULT NOW()
+            );
+            """);
+        Console.WriteLine("✅ Database connected and table verified!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ DB Error: {ex.Message}");
+    }
 }
 
-
-// Configure HTTP Pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute(
-    "/not-found",
-    createScopeForStatusCodePages: true);
-
 app.UseHttpsRedirection();
-
 app.UseAntiforgery();
-
 app.MapStaticAssets();
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

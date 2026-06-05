@@ -1,13 +1,15 @@
-﻿namespace App08_ToDoWithDatabase.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TodoApp.Models;
 
 public class TodoItem
 {
     public int Id { get; set; }
 
+    [Required]
     public string Title { get; set; } = string.Empty;
 
     public bool IsCompleted { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-        = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
